@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        String   @id @default(uuid())
+  username  String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  firstname String   @db.VarChar(255)
+  lastname  String   @db.VarChar(255)
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  role      roles
+  cameras   cameras? @relation(fields: [cameraId], references: [id])
+  cameraId  String?  @map("camera_id")
+
+  @@unique(fields: [firstname, lastname])
+}
+
+model cameras {
+  id        String   @id @default(uuid())
+  rtspUrl   String   @unique @map("rtsp_url")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  cars      cars[]
+  users     users[]
+}
+
+model cars {
+  id             String         @id @default(uuid())
+  camera         cameras        @relation(fields: [cameraId], references: [id], onDelete: Cascade)
+  cameraId       String         @default(uuid()) @map("camera_id")
+  carImgUrl      String         @map("car_img_url")
+  carBrand       String         @map("car_brand")
+  license_plates license_plates @relation(fields: [lpId], references: [id], onDelete: Cascade)
+  lpId           String         @default(uuid()) @map("lp_id")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  dateTime       DateTime       @map("date_time") @db.Timestamptz()
+
+  @@unique(fields: [lpId, dateTime])
+}
+
+model license_plates {
+  id        String   @id @default(uuid())
+  lpNumber  String   @unique @map("lp_number")
+  province  String
+  lpImgUrl  String   @map("lp_img_url")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  cars      cars[]
+}
+
+enum roles {
+  admin
+  user
+}
