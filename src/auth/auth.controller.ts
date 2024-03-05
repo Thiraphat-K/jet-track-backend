@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { TypedBody, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedQuery, TypedRoute } from '@nestia/core';
 import { IAccessSignUp, ILogin, ISignUp } from 'src/interface/auth.interface';
 import { AuthService } from './auth.service';
 import { Public } from 'src/decorator/public.decorator';
@@ -21,5 +21,12 @@ export class AuthController {
   @TypedRoute.Post('login')
   async logIn(@TypedBody() input: ILogin) {
     return await this.authService.logIn(input);
+  }
+
+  @Public()
+  @TypedRoute.Get('login-nextauth')
+  async nextAuthLogIn(@TypedQuery() query: ILogin) {
+    console.log(query.username, query.password);
+    return await this.authService.nextAuthLogIn(query);
   }
 }

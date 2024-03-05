@@ -32,7 +32,7 @@ export class CameraService {
 
   async getCameraByIU(cameraIU: ICameraIU): Promise<cameras> {
     let camera: cameras;
-    if (cameraIU.id !== (null || undefined))
+    if (cameraIU.id !== undefined)
       camera = (await this.prismaService.cameras.findFirst({
         where: { id: cameraIU.id },
         // include: { users: { select: { id: true } } },
@@ -46,4 +46,8 @@ export class CameraService {
       })) as cameras;
     return camera;
   }
+
+  // async getAllDataCamera(cameraIU: ICameraIU) {
+  //   const camera = await this.get
+  // }
 }
