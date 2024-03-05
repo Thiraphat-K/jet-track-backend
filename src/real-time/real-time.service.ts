@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { cameras } from '@prisma/client';
 import { CameraService } from 'src/common/camera.service';
@@ -23,14 +27,13 @@ export class RealTimeService {
   ) {}
   async connectCamera(inputData: ICamera) {
     let camera: cameras;
-    try {
-      const existed = await this.cameraService.getCameraByIU({
-        rtsp_url: inputData.rtsp_url,
-      });
-      camera = existed;
-    } catch {
-      camera = await this.cameraService.createCamera(inputData);
-    }
+    const existed = await this.cameraService.getCameraByIU({
+      rtsp_url: inputData.rtsp_url,
+    });
+    if (existed) camera = existed;
+    else camera = await this.cameraService.createCamera(inputData);
+    if (!camera)
+      throw new BadRequestException({ message: 'Can not connect ip-camera.' });
     await this.userService.updateUser(inputData.user_id!, {
       camera_id: camera.id,
     });

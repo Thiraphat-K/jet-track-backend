@@ -44,7 +44,7 @@ model cars {
   license_plates license_plates @relation(fields: [lpId], references: [id], onDelete: Cascade)
   lpId           String         @default(uuid()) @map("lp_id")
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz()
-  dateTime       DateTime       @map("date_time") @db.Timestamptz()
+  dateTime       DateTime       @map("date_time") @db.Timestamp()
 
   @@unique(fields: [lpId, dateTime])
 }
