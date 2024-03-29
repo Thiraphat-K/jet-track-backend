@@ -1,4 +1,4 @@
-import { TypedBody, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedParam, TypedRoute } from '@nestia/core';
 import { Controller } from '@nestjs/common';
 import { SettingService } from './setting.service';
 import { IUser, IUserRePwd } from 'src/interface/user.interface';
@@ -6,10 +6,17 @@ import { tags } from 'typia';
 import { roles } from '@prisma/client';
 import { Role } from 'src/decorator/role.decorator';
 import { User } from 'src/decorator/user.decorator';
+import { Public } from 'src/decorator/public.decorator';
 
 @Controller('setting')
 export class SettingController {
   constructor(private readonly settingService: SettingService) {}
+
+  @Public()
+  @TypedRoute.Get('users-camera/:rtsp_ip')
+  async settingGetUsers(@TypedParam('rtsp_ip') input: string) {
+    return await this.settingService.getAllUsers({ rtsp_ip: input });
+  }
 
   @Role(roles.admin)
   @TypedRoute.Post('add-user')

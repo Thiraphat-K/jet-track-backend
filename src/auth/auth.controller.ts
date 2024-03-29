@@ -26,7 +26,7 @@ export class AuthController {
   @Public()
   @TypedRoute.Get('login-nextauth')
   async nextAuthLogIn(@TypedQuery() query: ILogin) {
-    console.log(query.username, query.password);
+    // console.log(query.username, query.password);
     return await this.authService.nextAuthLogIn(query);
   }
 }

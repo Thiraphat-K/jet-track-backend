@@ -4,26 +4,25 @@ import {
   NotAcceptableException,
 } from '@nestjs/common';
 import { cameras } from '@prisma/client';
-import { ICamera, ICameraIU } from 'src/interface/cameras.interface';
+import { ICameraIU } from 'src/interface/cameras.interface';
+import { IUserIU } from 'src/interface/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CameraService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createCamera(cameraData: ICamera): Promise<cameras> {
-    if (!cameraData)
+  async createCamera(cameraIU: ICameraIU): Promise<cameras> {
+    if (!cameraIU)
       throw new NotAcceptableException({
-        message: 'Please enter url ip-camera again.',
+        message: 'Please enter ip-camera address again.',
       });
-    const existed = await this.getCameraByIU({ rtsp_url: cameraData.rtsp_url });
+    const existed = await this.getCameraByIU({ rtsp_ip: cameraIU.rtsp_ip });
     if (existed) return existed;
     const camera = await this.prismaService.cameras.create({
       data: {
-        rtspUrl: cameraData.rtsp_url,
-        // users: { connect: { id: cameraData.user_id } },
+        rtspUrl: `rtsp://${cameraIU.rtsp_ip}:1200/live`,
       },
-      // include: { users: { select: { id: true } } },
     });
     if (!camera)
       throw new BadRequestException({ message: 'Failed to create ip-camera.' });
@@ -33,21 +32,26 @@ export class CameraService {
   async getCameraByIU(cameraIU: ICameraIU): Promise<cameras> {
     let camera: cameras;
     if (cameraIU.id !== undefined)
-      camera = (await this.prismaService.cameras.findFirst({
+      camera = (await this.prismaService.cameras.findUnique({
         where: { id: cameraIU.id },
-        // include: { users: { select: { id: true } } },
       })) as cameras;
     else
       camera = (await this.prismaService.cameras.findUnique({
         where: {
-          rtspUrl: cameraIU.rtsp_url,
+          rtspUrl: `rtsp://${cameraIU.rtsp_ip}:1200/live`,
         },
-        // include: { users: { select: { id: true } } },
       })) as cameras;
     return camera;
   }
 
-  // async getAllDataCamera(cameraIU: ICameraIU) {
-  //   const camera = await this.get
-  // }
+  async getAllUsers(
+    cameraIU: ICameraIU,
+  ): Promise<cameras & { users: IUserIU[] }> {
+    const rtspIp = cameraIU.rtsp_ip;
+    const camera = await this.prismaService.cameras.findFirst({
+      where: { rtspUrl: { contains: rtspIp } },
+      include: { users: { select: { username: true } } },
+    });
+    return camera!;
+  }
 }

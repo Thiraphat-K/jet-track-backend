@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
+import fastifyCookie from '@fastify/cookie';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -13,6 +14,9 @@ async function bootstrap() {
     { cors: true },
   );
   const configService = app.get(ConfigService);
+  await app.register(fastifyCookie, {
+    secret: configService.get<string>('jwt-secret'),
+  });
   app.setGlobalPrefix('api');
   await app.listen(
     configService.get<number>('port', { infer: true }),

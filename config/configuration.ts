@@ -11,4 +11,5 @@ export default () => ({
   'minio-access_key': process.env.S3_ACCESS_KEY,
   'minio-secret_key': process.env.S3_SECRET_KEY,
   'minio-bucket': process.env.S3_BUCKET_NAME,
+  'ws-secret_key': process.env.WS_SECRET_KEY,
 });

@@ -18,8 +18,8 @@ model users {
   firstname String   @db.VarChar(255)
   lastname  String   @db.VarChar(255)
   createdBy String?  @map("created_by")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  createdAt DateTime @default(dbgenerated()) @map("created_at") @db.Timestamp()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp()
   role      roles
   cameras   cameras? @relation(fields: [cameraId], references: [id])
   cameraId  String?  @map("camera_id")
@@ -30,7 +30,7 @@ model users {
 model cameras {
   id        String   @id @default(uuid())
   rtspUrl   String   @unique @map("rtsp_url")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  createdAt DateTime @default(dbgenerated()) @map("created_at") @db.Timestamp()
   cars      cars[]
   users     users[]
 }
@@ -43,7 +43,7 @@ model cars {
   carBrand       String         @map("car_brand")
   license_plates license_plates @relation(fields: [lpId], references: [id], onDelete: Cascade)
   lpId           String         @default(uuid()) @map("lp_id")
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  createdAt      DateTime       @default(dbgenerated()) @map("created_at") @db.Timestamp()
   dateTime       DateTime       @map("date_time") @db.Timestamp()
 
   @@unique(fields: [lpId, dateTime])
@@ -54,7 +54,7 @@ model license_plates {
   lpNumber  String   @unique @map("lp_number")
   province  String
   lpImgUrl  String   @map("lp_img_url")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  createdAt DateTime @default(dbgenerated()) @map("created_at") @db.Timestamp()
   cars      cars[]
 }
 

@@ -14,6 +14,7 @@ import { HttpExceptionFilter } from './filter/httpException.filter';
 import { AuthGuard } from './guard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { MinioClientModule } from './minio-client/minio-client.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MinioClientModule } from './minio-client/minio-client.module';
     SettingModule,
     CommonModule,
     MinioClientModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [

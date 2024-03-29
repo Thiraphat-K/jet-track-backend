@@ -7,10 +7,14 @@ import { CameraService } from 'src/common/camera.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CarService } from 'src/common/car.service';
 import { LicensePlateService } from 'src/common/license-plate.service';
+import { UserService } from 'src/common/user.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   controllers: [HistoryController],
   providers: [
+    ConfigService,
+    UserService,
     HistoryService,
     PrismaService,
     CarService,

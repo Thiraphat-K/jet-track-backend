@@ -14,12 +14,12 @@ import { IS_PUBLIC_KEY } from 'src/decorator/public.decorator';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly reaflector: Reflector,
+    private readonly reflector: Reflector,
     private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reaflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     const req = context.switchToHttp().getRequest<FastifyRequest>();
+    // console.log(req['cookies']);
     const token = this.extractTokenFromHeader(req);
     if (!token)
       throw new UnauthorizedException({

@@ -4,13 +4,20 @@ import { IUser, IUserRePwd } from 'src/interface/user.interface';
 import { tags } from 'typia';
 import * as argon2 from 'argon2';
 import { ConfigService } from '@nestjs/config';
+import { CameraService } from 'src/common/camera.service';
+import { ICameraIU } from 'src/interface/cameras.interface';
 
 @Injectable()
 export class SettingService {
   constructor(
     private readonly userService: UserService,
+    private readonly cameraService: CameraService,
     private readonly configService: ConfigService,
   ) {}
+
+  async getAllUsers(cameraData: ICameraIU) {
+    return await this.cameraService.getAllUsers(cameraData);
+  }
 
   async addUser(userData: IUser) {
     return await this.userService.createUser(userData, 'user');

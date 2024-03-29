@@ -18,6 +18,7 @@ export interface IDataRealtime {
 }
 
 export interface IEventRealtime {
+  id: string & tags.Format<'uuid'>;
   date_time: string & tags.Format<'date-time'>;
   lp_number: string;
   province: string;
@@ -33,4 +34,9 @@ export interface IEventLog {
   brand?: string;
   start_date_time?: string & tags.Format<'date-time'>;
   end_date_time?: string & tags.Format<'date-time'>;
+  rtsp_ip: string;
+}
+
+export interface IWsEvents {
+  messageData: (payload: IEventRealtime) => void;
 }

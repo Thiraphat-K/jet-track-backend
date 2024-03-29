@@ -23,7 +23,6 @@ export class MinioClientService {
       );
       const rawData = (await jsonFile).read();
       const jsonData: IDataRealtime = JSON.parse(rawData);
-      console.log(jsonData);
       return jsonData;
     } catch {
       throw new InternalServerErrorException({

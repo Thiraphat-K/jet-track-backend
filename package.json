@@ -25,6 +25,7 @@
     "prepare": "ts-patch install && typia patch"
   },
   "dependencies": {
+    "@fastify/cookie": "^9.3.1",
     "@nestia/core": "^2.5.11",
     "@nestia/e2e": "^0.4.1",
     "@nestia/fetcher": "^2.5.11",
@@ -36,6 +37,7 @@
     "fastify": "^4.26.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.7.4",
     "typia": "^5.4.12"
   },
   "devDependencies": {
@@ -44,8 +46,10 @@
     "@nestjs/config": "^3.2.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-fastify": "^10.3.3",
+    "@nestjs/platform-socket.io": "^10.3.3",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@nestjs/websockets": "^10.3.3",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
