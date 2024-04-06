@@ -29,11 +29,11 @@ export interface IEventRealtime {
 }
 
 export interface IEventLog {
-  license_plate?: string;
+  lpNumber?: string;
   province?: string;
   brand?: string;
-  start_date_time?: string & tags.Format<'date-time'>;
-  end_date_time?: string & tags.Format<'date-time'>;
+  startDateTime?: string & tags.Format<'date-time'>;
+  endDateTime?: string & tags.Format<'date-time'>;
   rtsp_ip: string;
 }
 

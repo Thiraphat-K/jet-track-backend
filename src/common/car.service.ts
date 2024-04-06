@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { cars } from '@prisma/client';
-import { ICar, ICarU, ICars } from 'src/interface/cars.interface';
+import { ICar, ICars, ICarU } from 'src/interface/cars.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CameraService } from './camera.service';
 import { IEventLog } from 'src/interface/common.interface';
@@ -51,30 +51,30 @@ export class CarService {
         id: carIU.id,
       },
       select: {
-        camera: {
+        cameras: {
           select: {
             rtspUrl: true,
           },
         },
       },
     });
-    const rtspIp = cameraUrl?.camera.rtspUrl
+    const rtspIp = cameraUrl?.cameras.rtspUrl
       .split('/')[2]
       .split(':')[0] as string;
     return { ...car, rtspIp: rtspIp };
   }
 
   async getAllCars(eventLog: IEventLog): Promise<ICars[]> {
-    console.log(eventLog);
+    // console.log(eventLog);
     const _cars = await this.prismaService.cars.findMany({
       where: {
-        camera: { rtspUrl: { contains: eventLog.rtsp_ip } },
+        cameras: { rtspUrl: { contains: eventLog.rtsp_ip } },
         dateTime: {
-          gte: eventLog.start_date_time,
-          lte: eventLog.end_date_time,
+          gte: eventLog.startDateTime,
+          lte: eventLog.endDateTime,
         },
         license_plates: {
-          lpNumber: { contains: eventLog.license_plate },
+          lpNumber: { contains: eventLog.lpNumber },
           province: { contains: eventLog.province },
         },
         carBrand: { contains: eventLog.brand },
@@ -94,7 +94,6 @@ export class CarService {
       ...car,
       rtspIp: eventLog.rtsp_ip,
     }));
-    console.log(mergeData.length);
     return mergeData;
   }
 }

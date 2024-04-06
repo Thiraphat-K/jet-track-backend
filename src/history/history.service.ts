@@ -30,6 +30,7 @@ export class HistoryService {
   }
 
   async getAllData(eventLog: IEventLog) {
+    // return await this.cameraService.getAllData(eventLog);
     return await this.carService.getAllCars(eventLog);
   }
 

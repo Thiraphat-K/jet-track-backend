@@ -4,7 +4,8 @@ import {
   NotAcceptableException,
 } from '@nestjs/common';
 import { cameras } from '@prisma/client';
-import { ICameraIU } from 'src/interface/cameras.interface';
+import { ICameraCars, ICameraIU } from 'src/interface/cameras.interface';
+import { IEventLog } from 'src/interface/common.interface';
 import { IUserIU } from 'src/interface/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -53,5 +54,47 @@ export class CameraService {
       include: { users: { select: { username: true } } },
     });
     return camera!;
+  }
+
+  // Not available, use car service instead.
+  async getAllData(eventLog: IEventLog): Promise<ICameraCars | null> {
+    const _camera = await this.prismaService.cameras.findFirst({
+      where: {
+        rtspUrl: `rtsp://${eventLog.rtsp_ip}:1200/live`,
+      },
+      select: {
+        rtspUrl: true,
+        cars: {
+          where: {
+            license_plates: {
+              lpNumber: { contains: eventLog.lpNumber },
+              province: { contains: eventLog.province },
+            },
+            carBrand: { contains: eventLog.brand },
+            dateTime: {
+              gte: eventLog.startDateTime,
+              lte: eventLog.endDateTime,
+            },
+          },
+          select: {
+            id: true,
+            dateTime: true,
+            license_plates: {
+              select: { lpImgUrl: true, lpNumber: true, province: true },
+            },
+            carBrand: true,
+            carImgUrl: true,
+          },
+          orderBy: { dateTime: 'desc' },
+        },
+      },
+    });
+    const camera = Object.keys(_camera!).reduce((acc, key) => {
+      if (key === 'rtspUrl') acc['rtspIp'] = eventLog.rtsp_ip;
+      else acc[key] = _camera![key];
+      return acc;
+    }, {}) as ICameraCars;
+    console.log(camera.cars.length);
+    return camera;
   }
 }

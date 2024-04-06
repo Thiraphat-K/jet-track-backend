@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearch", "relationJoins"]
 }
 
 datasource db {
@@ -37,7 +37,7 @@ model cameras {
 
 model cars {
   id             String         @id @default(uuid())
-  camera         cameras        @relation(fields: [cameraId], references: [id], onDelete: Cascade)
+  cameras        cameras        @relation(fields: [cameraId], references: [id], onDelete: Cascade)
   cameraId       String         @default(uuid()) @map("camera_id")
   carImgUrl      String         @map("car_img_url")
   carBrand       String         @map("car_brand")
